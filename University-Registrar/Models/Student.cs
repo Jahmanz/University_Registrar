@@ -21,7 +21,7 @@ namespace UniversityRegistrar
       _id = id;
     }
 
-    public override bool Equals(Sustem.Object otherStudent)
+    public override bool Equals(System.Object otherStudent)
     {
       if (!(otherStudent is Student))
       {
@@ -116,7 +116,7 @@ namespace UniversityRegistrar
       conn.Open();
 
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"INSERT INTO students (name, course_id, grade, enrollment_date);";
+      cmd.CommandText = @"INSERT INTO students (name, course_id, grade, enrollment_date) VALUES (@name, @course_id, @grade, @enrollment_date);";
 
       MySqlParameter name = new MySqlParameter();
       name.ParameterName = "@name";
