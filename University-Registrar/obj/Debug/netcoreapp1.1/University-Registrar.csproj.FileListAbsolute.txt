@@ -1,0 +1,8 @@
+/Users/Guest/Desktop/University-Registrar/University-Registrar/bin/Debug/netcoreapp1.1/University-Registrar.deps.json
+/Users/Guest/Desktop/University-Registrar/University-Registrar/bin/Debug/netcoreapp1.1/University-Registrar.runtimeconfig.json
+/Users/Guest/Desktop/University-Registrar/University-Registrar/bin/Debug/netcoreapp1.1/University-Registrar.runtimeconfig.dev.json
+/Users/Guest/Desktop/University-Registrar/University-Registrar/obj/Debug/netcoreapp1.1/University-Registrar.AssemblyInfo.cs
+/Users/Guest/Desktop/University-Registrar/University-Registrar/bin/Debug/netcoreapp1.1/University-Registrar.dll
+/Users/Guest/Desktop/University-Registrar/University-Registrar/bin/Debug/netcoreapp1.1/University-Registrar.pdb
+/Users/Guest/Desktop/University-Registrar/University-Registrar/obj/Debug/netcoreapp1.1/University-Registrar.dll
+/Users/Guest/Desktop/University-Registrar/University-Registrar/obj/Debug/netcoreapp1.1/University-Registrar.pdb

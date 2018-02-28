@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using System;
+using System.Data;
 
-namespace UniversityRegistrar
+namespace UniversityRegistrar.Models
 {
   public class Course
   {
@@ -44,9 +45,9 @@ namespace UniversityRegistrar
     }
     public string GetName()
     {
-      _name = name;
+      return _name;
     }
-    public void SetName()
+    public void SetName(string name)
     {
       _name = name;
     }
@@ -54,7 +55,7 @@ namespace UniversityRegistrar
     public static List<Course> GetAll()
     {
       List<Course> allCourses = new List<Course>{};
-      MySqlConnection = DB.Connection();
+      MySqlConnection conn = DB.Connection();
       conn.Open();
       var cmd = conn.CreateCommand();
       cmd.CommandText = @"SELECT  * FROM courses;";
@@ -67,9 +68,10 @@ namespace UniversityRegistrar
         Course newCourse = new Course(courseName, courseId);
         allCourses.Add(newCourse);
       }
+      return allCourses;
     }
 
-    public static Save()
+    public void Save()
     {
       MySqlConnection conn = DB.Connection();
       conn.Open();
@@ -99,7 +101,7 @@ namespace UniversityRegistrar
 
       MySqlParameter searchId = new MySqlParameter();
       searchId.ParameterName = "@searchId";
-      searchId.Value = _id;
+      searchId.Value = id;
       cmd.Parameters.Add(searchId);
 
       var rdr = cmd.ExecuteReader() as MySqlDataReader;
@@ -110,15 +112,15 @@ namespace UniversityRegistrar
       {
         courseId = rdr.GetInt32(0);
         courseName = rdr.GetString(1);
-
-        Course newCourse = new Course(courseName, courseId);
-        conn.Close();
-        if (conn != null)
-        {
-          conn.Dispose();
-        }
-        return newCourse;
       }
+
+      Course newCourse = new Course(courseName, courseId);
+      conn.Close();
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+      return newCourse;
     }
 
     public void UpdateName(string newName)
@@ -134,7 +136,7 @@ namespace UniversityRegistrar
       cmd.Parameters.Add(searchId);
 
       MySqlParameter name = new MySqlParameter();
-      name.ParameterName "@newName";
+      name.ParameterName = "@newName";
       name.Value = newName;
       cmd.Parameters.Add(newName);
 
@@ -161,7 +163,7 @@ namespace UniversityRegistrar
 
       cmd.ExecuteNonQuery();
       conn.Close();
-      if (conn ! = null)
+      if (conn != null)
       {
         conn.Dispose();
       }
@@ -171,8 +173,8 @@ namespace UniversityRegistrar
     {
       MySqlConnection conn = DB.Connection();
       conn.Open();
-      var cmd = cpnn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"DELETE * FROM courses;";
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"DELETE FROM courses;";
 
       cmd.ExecuteNonQuery();
       conn.Close();
