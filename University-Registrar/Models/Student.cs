@@ -207,6 +207,32 @@ namespace UniversityRegistrar.Models
         conn.Dispose();
       }
     }
+
+    public void AddCourse(Course newCourse)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"INSERT INTO schedule (student_id, course_id) VALUES (@studentId, @courseId);";
+
+      MySqlParameter student_id = new MySqlParameter();
+      student_id.ParameterName = "@studentId";
+      student_id.Value = _id;
+      cmd.Parameters.Add(student_id);
+
+      MySqlParameter course_id = new MySqlParameter();
+      course_id.ParameterName = "@courseId";
+      course_id.Value = newCourse.GetId();
+      cmd.Parameters.Add(course_id);
+
+      cmd.ExecuteNonQuery();
+      conn.Close();
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+    }
+
     public void DeleteOne(int id)
     {
       MySqlConnection conn = DB.Connection();

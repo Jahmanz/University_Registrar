@@ -138,7 +138,7 @@ namespace UniversityRegistrar.Models
       MySqlParameter name = new MySqlParameter();
       name.ParameterName = "@newName";
       name.Value = newName;
-      cmd.Parameters.Add(newName);
+      cmd.Parameters.Add(name);
 
       cmd.ExecuteNonQuery();
       _name = newName;
@@ -149,7 +149,32 @@ namespace UniversityRegistrar.Models
       }
     }
 
-    public void DeleteOne()
+    public void AddStudent(Student newStudent)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"INSERT INTO schedule (student_id, course_id) VALUES (@studentId, @courseId);";
+
+      MySqlParameter student_id = new MySqlParameter();
+      student_id.ParameterName = "@studentId";
+      student_id.Value = newStudent.GetId();
+      cmd.Parameters.Add(student_id);
+
+      MySqlParameter course_id = new MySqlParameter();
+      course_id.ParameterName = "@courseId";
+      course_id.Value = _id;
+      cmd.Parameters.Add(course_id);
+
+      cmd.ExecuteNonQuery();
+      conn.Close();
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+    }
+
+    public void DeleteOne(int id)
     {
       MySqlConnection conn = DB.Connection();
       conn.Open();

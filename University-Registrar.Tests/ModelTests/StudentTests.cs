@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using UniversityRegistrar.Models;
 using System.Data;
+using MySql.Data.MySqlClient;
 
 namespace UniversityRegistrar.Tests
 {
@@ -74,19 +75,6 @@ namespace UniversityRegistrar.Tests
       Assert.AreEqual(testStudent, result);
     }
     [TestMethod]
-    public void DeleteOne_DeleteOneStudentInDatabase_Int()
-    {
-      DateTime dt = new DateTime(2000, 1, 1, 1, 0, 0);
-      Student firstStudent = new Student("Jahmanz", 1, "Senior", dt);
-      firstStudent.Save();
-      Student secondStudent = new Student("Faiza", 1, "Senior", dt);
-      secondStudent.Save();
-      string result = Student.Find(firstStudent.GetId()).GetName();
-      Assert.AreEqual(firstStudent.GetName(), result);
-      firstStudent.DeleteOne(firstStudent.GetId());
-      Assert.AreEqual(1, Student.GetAll().Count);
-    }
-    [TestMethod]
     public void Update_UpdateStudentInDatabase_String()
     {
       DateTime dt = new DateTime(2000, 1, 1, 1, 0, 0);
@@ -102,7 +90,56 @@ namespace UniversityRegistrar.Tests
       Assert.AreEqual(updateName, result);
     }
     [TestMethod]
-    public void DeleteAll_DeleteAlltudentInDatabase_Int()
+    public void Add_AddCourseToStudents_Int()
+    {
+      DateTime dt = new DateTime(2000, 1, 1, 1, 0, 0);
+
+      Course testCourse = new Course("Math200");
+      testCourse.Save();
+
+      Student testStudent = new Student("Faiza", 1, "Senior", dt);
+      testStudent.Save();
+
+      testStudent.AddCourse(testCourse);
+
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      //return just the id of the testStudent
+      cmd.CommandText = @"SELECT student_id FROM schedule WHERE student_id = @testStudentId;";
+
+      MySqlParameter searchId = new MySqlParameter();
+      searchId.ParameterName = "@testStudentId";
+      searchId.Value = testStudent.GetId();
+      cmd.Parameters.Add(searchId);
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      int result = 0;
+      
+      while(rdr.Read())
+      {
+        result = rdr.GetInt32(0);
+      }
+      Assert.AreEqual(result, testStudent.GetId());
+
+    }
+    [TestMethod]
+    public void DeleteOne_DeleteOneStudentInDatabase_Int()
+    {
+      DateTime dt = new DateTime(2000, 1, 1, 1, 0, 0);
+      Student firstStudent = new Student("Jahmanz", 1, "Senior", dt);
+      firstStudent.Save();
+      Student secondStudent = new Student("Faiza", 1, "Senior", dt);
+      secondStudent.Save();
+
+      string result = Student.Find(firstStudent.GetId()).GetName();
+      Assert.AreEqual(firstStudent.GetName(), result);
+      firstStudent.DeleteOne(firstStudent.GetId());
+
+      Assert.AreEqual(1, Student.GetAll().Count);
+    }
+    [TestMethod]
+    public void DeleteAll_DeleteAllStudentInDatabase_Int()
     {
       DateTime dt = new DateTime(2000, 1, 1, 1, 0, 0);
       Student firstStudent = new Student("Jahmanz", 1, "Senior", dt);
