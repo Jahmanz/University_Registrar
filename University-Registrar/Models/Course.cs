@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
-using System;
 using System.Data;
+using System;
 
 namespace UniversityRegistrar.Models
 {
@@ -174,7 +174,39 @@ namespace UniversityRegistrar.Models
       }
     }
 
-    public void DeleteOne(int id)
+    public List<Student> GetStudents()
+    {
+      List<Student> newStudentList = new List<Student>{};
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT students.* FROM courses
+                JOIN schedule ON (courses.id = schedule.course_id)
+                JOIN students ON (schedule.student_id = students.id)
+                WHERE courses.id = @CourseId;";
+      MySqlParameter course_id = new MySqlParameter();
+      course_id.ParameterName = "@CourseId";
+      course_id.Value = _id;
+      cmd.Parameters.Add(course_id);
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      while (rdr.Read())
+      {
+        string name = rdr.GetString(1);
+        string grade = rdr.GetString(2);
+        DateTime date = rdr.GetDateTime(3);
+
+        Student newStudent = new Student(name, grade, date);
+        newStudentList.Add(newStudent);
+      }
+      conn.Close();
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+      return newStudentList;
+    }
+
+    public void DeleteOne()
     {
       MySqlConnection conn = DB.Connection();
       conn.Open();

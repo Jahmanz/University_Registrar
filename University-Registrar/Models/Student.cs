@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
-using System;
 using System.Data;
+using System;
 
 namespace UniversityRegistrar.Models
 {
@@ -9,14 +9,12 @@ namespace UniversityRegistrar.Models
   {
     private int _id;
     private string _name;
-    private int _course_id;
     private string _grade;
     private DateTime _enrollment_date;
 
-    public Student(string name, int course_id, string grade, DateTime enrollment_date, int id = 0)
+    public Student(string name, string grade, DateTime enrollment_date, int id = 0)
     {
       _name = name;
-      _course_id = course_id;
       _grade = grade;
       _enrollment_date = enrollment_date;
       _id = id;
@@ -33,11 +31,10 @@ namespace UniversityRegistrar.Models
         Student newStudent = (Student) otherStudent;
         bool idEquality = this.GetId() == newStudent.GetId();
         bool nameEquality = this.GetName() == newStudent.GetName();
-        bool courseEquality = this.GetCourseId() == newStudent.GetCourseId();
         bool gradeEquality = this.GetGrade() == newStudent.GetGrade();
         bool enrollment_dateEquality = this.GetEnrollmentDate() == newStudent.GetEnrollmentDate();
 
-        return (idEquality && nameEquality && courseEquality && gradeEquality && enrollment_dateEquality);
+        return (idEquality && nameEquality && gradeEquality && enrollment_dateEquality);
       }
     }
     public override int GetHashCode()
@@ -60,14 +57,6 @@ namespace UniversityRegistrar.Models
     public void SetName(string name)
     {
       _name = name;
-    }
-    public int GetCourseId()
-    {
-      return _course_id;
-    }
-    public void SetCourseId(int course_id)
-    {
-      _course_id = course_id;
     }
     public string GetGrade()
     {
@@ -97,11 +86,10 @@ namespace UniversityRegistrar.Models
         {
           int studentId = rdr.GetInt32(0);
           string studentName = rdr.GetString(1);
-          int course_id = rdr.GetInt32(2);
-          string grade = rdr.GetString(3);
-          DateTime enrollment_date = rdr.GetDateTime(4);
+          string grade = rdr.GetString(2);
+          DateTime enrollment_date = rdr.GetDateTime(3);
 
-          Student newStudent = new Student(studentName, course_id, grade, enrollment_date, studentId);
+          Student newStudent = new Student(studentName, grade, enrollment_date, studentId);
           allStudents.Add(newStudent);
         }
         conn.Close();
@@ -117,17 +105,12 @@ namespace UniversityRegistrar.Models
       conn.Open();
 
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"INSERT INTO students (name, course_id, grade, enrollment_date) VALUES (@name, @course_id, @grade, @enrollment_date);";
+      cmd.CommandText = @"INSERT INTO students (name, grade, enrollment_date) VALUES (@name, @grade, @enrollment_date);";
 
       MySqlParameter name = new MySqlParameter();
       name.ParameterName = "@name";
       name.Value = this._name;
       cmd.Parameters.Add(name);
-
-      MySqlParameter course_id = new MySqlParameter();
-      course_id.ParameterName = "@course_id";
-      course_id.Value = this._course_id;
-      cmd.Parameters.Add(course_id);
 
       MySqlParameter grade = new MySqlParameter();
       grade.ParameterName = "@grade";
@@ -162,7 +145,6 @@ namespace UniversityRegistrar.Models
       var rdr = cmd.ExecuteReader() as MySqlDataReader;
       int studentId = 0;
       string studentName = "";
-      int courseId = 0;
       string grade = "";
       DateTime enrollmentDate = new DateTime (2000, 1, 1, 1, 0, 0);
 
@@ -170,11 +152,10 @@ namespace UniversityRegistrar.Models
       {
         studentId = rdr.GetInt32(0);
         studentName = rdr.GetString(1);
-        courseId = rdr.GetInt32(2);
-        grade = rdr.GetString(3);
-        enrollmentDate = rdr.GetDateTime(4);
+        grade = rdr.GetString(2);
+        enrollmentDate = rdr.GetDateTime(3);
       }
-      Student newStudent = new Student(studentName, courseId, grade, enrollmentDate, studentId);
+      Student newStudent = new Student(studentName, grade, enrollmentDate, studentId);
       conn.Close();
       if (conn != null)
       {
@@ -213,17 +194,12 @@ namespace UniversityRegistrar.Models
       MySqlConnection conn = DB.Connection();
       conn.Open();
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"INSERT INTO schedule (student_id, course_id) VALUES (@studentId, @courseId);";
+      cmd.CommandText = @"INSERT INTO schedule (student_id) VALUES (@studentId);";
 
       MySqlParameter student_id = new MySqlParameter();
       student_id.ParameterName = "@studentId";
       student_id.Value = _id;
       cmd.Parameters.Add(student_id);
-
-      MySqlParameter course_id = new MySqlParameter();
-      course_id.ParameterName = "@courseId";
-      course_id.Value = newCourse.GetId();
-      cmd.Parameters.Add(course_id);
 
       cmd.ExecuteNonQuery();
       conn.Close();
@@ -231,6 +207,37 @@ namespace UniversityRegistrar.Models
       {
         conn.Dispose();
       }
+    }
+
+    public List<Course> GetCourses()
+    {
+      List<Course> newCourseList = new List<Course>();
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT courses.* FROM students
+                JOIN schedule ON (students.id = schedule.student_id)
+                JOIN courses ON (schedule.course_id = courses.id)
+                WHERE students.id = @StudentId;";
+
+      MySqlParameter student_id = new MySqlParameter();
+      student_id.ParameterName = "@StudentId";
+      student_id.Value = _id;
+      cmd.Parameters.Add(student_id);
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      while (rdr.Read())
+      {
+        string name = rdr.GetString(1);
+        Course newCourse = new Course(name);
+        newCourseList.Add(newCourse);
+      }
+
+      conn.Close();
+      if (conn != null)
+      {
+        conn.Dispose();
+      }
+      return newCourseList;
     }
 
     public void DeleteOne(int id)

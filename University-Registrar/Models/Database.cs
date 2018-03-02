@@ -1,7 +1,7 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using UniversityRegistrar;
+using System;
 
 namespace UniversityRegistrar.Models
 {

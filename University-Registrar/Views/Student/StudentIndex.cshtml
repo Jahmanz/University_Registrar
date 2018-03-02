@@ -1,0 +1,21 @@
+@{
+  Layout = "_Layout";
+}
+
+<div class="container">
+  <h3>Students:</h3>
+  @if (Model != null)
+  {
+    <ul>
+      @foreach (var student in Model)
+      {
+        <li><a href="/students/@student.GetId()">@student.GetName()</a>
+        <a href="/students/@student.GetId()/update"> Edit</a></li>
+      }
+    </ul>
+  }
+  <br>
+  <h4><a href="/students/new"> Add student</a></h4>
+  <hr>
+  <h4><a href="/"> Home </a></h4>
+</div>

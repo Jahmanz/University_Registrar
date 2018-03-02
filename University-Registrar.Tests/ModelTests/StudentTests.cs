@@ -1,10 +1,10 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using System;
 using UniversityRegistrar.Models;
-using System.Data;
 using MySql.Data.MySqlClient;
+using System.Data;
+using System;
 
 namespace UniversityRegistrar.Tests
 {
@@ -115,14 +115,14 @@ namespace UniversityRegistrar.Tests
 
       var rdr = cmd.ExecuteReader() as MySqlDataReader;
       int result = 0;
-      
+
       while(rdr.Read())
       {
         result = rdr.GetInt32(0);
       }
       Assert.AreEqual(result, testStudent.GetId());
-
     }
+
     [TestMethod]
     public void DeleteOne_DeleteOneStudentInDatabase_Int()
     {

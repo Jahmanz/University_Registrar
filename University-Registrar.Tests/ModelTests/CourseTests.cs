@@ -1,8 +1,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using System;
 using UniversityRegistrar.Models;
+using MySql.Data.MySqlClient;
 using System.Data;
+using System;
 
 namespace UniversityRegistrar.Tests
 {
@@ -105,6 +106,40 @@ namespace UniversityRegistrar.Tests
     }
 
     [TestMethod]
+    public void Add_AddStudentToCourse_Int()
+    {
+      DateTime dt = new DateTime(2000, 1, 1, 1, 0, 0);
+
+      Student testStudent = new Student("Faiza", 1, "Senior", dt);
+      testStudent.Save();
+
+      Course testCourse = new Course("Math300");
+      testCourse.Save();
+
+      testCourse.AddStudent(testStudent);
+
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+      var cmd = conn.CreateCommand() as MySqlCommand;
+
+      cmd.CommandText = @"SELECT course_id FROM schedule WHERE course_id = @testCourseId;";
+
+      MySqlParameter searchId = new MySqlParameter();
+      searchId.ParameterName = "@testCourseId";
+      searchId.Value = testCourse.GetId();
+      cmd.Parameters.Add(searchId);
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      int result = 0;
+
+      while(rdr.Read())
+      {
+        result = rdr.GetInt32(0);
+      }
+      Assert.AreEqual(result, testCourse.GetId());
+    }
+
+    [TestMethod]
     public void DeleteAll_DeleteAllCourseInDatabase_Int()
     {
 
@@ -116,7 +151,7 @@ namespace UniversityRegistrar.Tests
       string result = Course.Find(firstCourse.GetId()).GetName();
       Assert.AreEqual(firstCourse.GetName(), result);
       Course.DeleteAll();
-      
+
       Assert.AreEqual(0, Course.GetAll().Count);
     }
   }

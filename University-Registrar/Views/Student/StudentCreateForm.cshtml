@@ -1,0 +1,25 @@
+@{
+  Layout = "_Layout";
+}
+
+<h3>Add Student</h3>
+<br>
+<hr>
+<form action="/students" method="post">
+  <label for="name">Student's Name: </label>
+  <input required type="text" name="student-name" placeholder="Student's Name" id="name">
+  <label for="grade">Student's Grade: </label>
+  <select id="grade" name="student-grade">
+    <option selected value="freshman">Freshman</option>
+    <option value="sophmore">Sophmore</option>
+    <option value="junior">Junior</option>
+    <option value="senior">Senior</option>
+  </select>
+  <label for="date">Student's Enrollment Date: </label>
+  <input required type="date" name="student-date" value="" id="date">
+  <hr>
+  <button type="submit"> Add </button>
+</form>
+<br>
+<p><a href="/"> Home </a></p>
+<p><a href="/students"> View all Students</a></p>
