@@ -8,8 +8,8 @@
     <ul>
       @foreach (var course in Model)
       {
-        <li><a href= "/courses/@course.GetId()"> | @course.GetName()</a>
-        <a href="/course/@course.GetId()/update"> Edit</a></li>
+        <li><a href= "/courses/@course.GetId()">  @course.GetName()</a> ||
+        <a href="/course/@course.GetId()/update"> Edit</a> || <a href="/course/@course.GetId()/delete"> Delete</a></li>
       }
     </ul>
   }

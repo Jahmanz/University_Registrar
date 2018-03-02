@@ -2,10 +2,10 @@
   Layout = "_Layout";
 }
 <div class="container">
-  <h2>Edit Course:</h2>
+  <h2>Edit Course: @Model.GetName()</h2>
   <form action="/courses/@Model.GetId()/update" method="post">
-    <label for="name-number"> Name and Number: </label>
-    <input type="text" name="new-name" value="@Model.GetName()">
+    <label for="new-name"> Name and Number: </label>
+    <input id="new-name" type="text" name="new-name" value="@Model.GetName()">
     <br>
     <button type="submit"> Update </button>
   </form>

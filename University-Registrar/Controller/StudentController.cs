@@ -75,5 +75,14 @@ namespace UniversityRegistrar
       thisStudent.UpdateName(newName);
       return RedirectToAction("StudentIndex");
     }
+
+    [HttpGet("/students/{studentId}/delete")]
+    public ActionResult DeleteOne(int studentId)
+    {
+      Student thisStudent = Student.Find(studentId);
+      thisStudent.DeleteOne();
+
+      return RedirectToAction("StudentIndex");
+    }
   }
 }

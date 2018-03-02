@@ -56,21 +56,22 @@ namespace UniversityRegistrar
       return RedirectToAction("Success", "Home");
     }
 
-    [HttpGet("/courses/{courseId}/update")]
-    public ActionResult CourseUpdateForm(int courseId)
+    [HttpGet("/courses/{id}/update")]
+    public ActionResult CourseUpdateForm(int id)
     {
-      Course thisCourse = Course.Find(courseId);
+      Course thisCourse = Course.Find(id);
 
-      return View("update", thisCourse);
+      return View("CourseUpdate", thisCourse);
     }
 
-    [HttpPost("/courses/{courseId}/update")]
-    public ActionResult CourseUpdate(int courseId)
+    [HttpPost("/course/{id}/update")]
+    public ActionResult Update(int id)
     {
-      Course thisCourse = Course.Find(courseId);
-      thisCourse.UpdateName(Request.Form["new-name"]);
+      string newName = Request.Form["new-name"];
+      Course thisCourse = Course.Find(id);
 
-      return RedirectToAction("Index");
+      thisCourse.UpdateName(newName);
+      return RedirectToAction("CourseIndex");
     }
 
     [HttpGet("/courses/{courseId}/delete")]
@@ -79,7 +80,7 @@ namespace UniversityRegistrar
       Course thisCourse = Course.Find(courseId);
       thisCourse.DeleteOne();
 
-      return RedirectToAction("index");
+      return RedirectToAction("CourseIndex");
     }
   }
 }

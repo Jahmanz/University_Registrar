@@ -240,7 +240,7 @@ namespace UniversityRegistrar.Models
       return newCourseList;
     }
 
-    public void DeleteOne(int id)
+    public void DeleteOne()
     {
       MySqlConnection conn = DB.Connection();
       conn.Open();
